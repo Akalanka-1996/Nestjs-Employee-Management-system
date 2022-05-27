@@ -1,4 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
+import { Employee } from './Employee.model';
+import { EmployeeSearchDto } from './Employee.Search.dto';
+import { EmployeeUpdateDto } from './Employee.Update.dto';
 import { EmployeesService } from './employees.service';
 
 @Controller('employees')
@@ -9,9 +12,23 @@ export class EmployeesController {
     }
 
     @Get()
-    getAllEmployees(){
+    getAllEmployees(@Query() param:EmployeeSearchDto){
+        // console.log(param)
         // todo: implement
-        return this.employeeService.getAllEmployees()
+        if (Object.keys(param).length) {
+            console.log(param)
+            console.log("filter")
+            return this.employeeService.searchEmployee(param);
+        } else {
+            console.log("no filter")
+            return this.employeeService.getAllEmployees()
+
+        }
+    }
+
+    @Get('/:id')
+    getEmployeeById(@Param('id') id : string) {
+        return this.employeeService.getEmployeeById(id)
     }
 
     @Post()
@@ -35,5 +52,19 @@ export class EmployeesController {
 
     }
     */
+
+    @Put('/:id/city')
+    updateEmployee(@Param('id') id: string, @Body()  employeeUpdateDto: EmployeeUpdateDto) { // id comes as query param
+        employeeUpdateDto.id = id
+        return this.employeeService.updateEmployee(employeeUpdateDto)
+    }
+
+    @Delete('/:id')
+    @HttpCode(204)
+    deleteEmployee(@Param('id') id: string) {
+       if( !this.employeeService.deleteEmployee(id)) {
+           throw new NotFoundException("Employee does not exist")
+       }
+    }
 
 }
