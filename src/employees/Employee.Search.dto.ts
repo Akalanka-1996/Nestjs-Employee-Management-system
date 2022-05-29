@@ -1,8 +1,10 @@
+import { IsIn } from "class-validator";
 import { Employee, EmployeeStatus } from "./Employee.model";
 
-export interface EmployeeSearchDto{
+export class EmployeeSearchDto{
     // user can filter base on status and name
-    status: EmployeeStatus,
+    @IsIn(Object.values(EmployeeStatus)) // check whether employee status is valid
+    status: EmployeeStatus
     name: string
 
 }

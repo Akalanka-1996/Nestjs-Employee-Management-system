@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { EmployeeTierValidationPipe } from 'src/employee-tier-validation.pipe';
+import { EmployeeCreateDto } from './Employee.Create.dto';
 import { Employee } from './Employee.model';
 import { EmployeeSearchDto } from './Employee.Search.dto';
 import { EmployeeUpdateDto } from './Employee.Update.dto';
@@ -12,6 +14,7 @@ export class EmployeesController {
     }
 
     @Get()
+    @UsePipes(ValidationPipe)
     getAllEmployees(@Query() param:EmployeeSearchDto){
         // console.log(param)
         // todo: implement
@@ -31,6 +34,19 @@ export class EmployeesController {
         return this.employeeService.getEmployeeById(id)
     }
 
+
+    // using employeeCreateDto
+    @Post()
+    @UsePipes(ValidationPipe) // using pipe when creating an employee
+    @UsePipes(new EmployeeTierValidationPipe())
+    createEmployee(@Body() employeeCreateDto: EmployeeCreateDto) {
+
+        return this.employeeService.createEmployee(employeeCreateDto)
+
+    }
+
+    // previous method
+    /*
     @Post()
     createEmployee(@Body('firstName') firstName: string,
         @Body('lastName') lastName: string,
@@ -41,6 +57,7 @@ export class EmployeesController {
         return this.employeeService.createEmployee(firstName, lastName, designation, nearestCity, tier)
 
     }
+    */
 
     // another method
     

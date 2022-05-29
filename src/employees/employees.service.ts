@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Employee, EmployeeTier, EmployeeStatus } from './Employee.model';
 import {v1 as uuid} from 'uuid'
 import { EmployeeSearchDto } from './Employee.Search.dto';
 import { EmployeeUpdateDto } from './Employee.Update.dto';
+import { EmployeeCreateDto } from './Employee.Create.dto';
 
 @Injectable()
 export class EmployeesService {
@@ -13,6 +14,7 @@ getAllEmployees(){
     return this.employees
 }
 
+/*
 createEmployee(firstName: string, lastName: string, designation: string, nearestCity: string, tier: EmployeeTier){
 
     const employee={
@@ -28,6 +30,26 @@ createEmployee(firstName: string, lastName: string, designation: string, nearest
     this.employees.push(employee)
     return employee
 
+}
+*/
+
+
+
+createEmployee(employeeCreateDto: EmployeeCreateDto) {
+    const {firstName, lastName, designation, nearestCity, tier} = employeeCreateDto
+
+    const employee = {
+        id: uuid(),
+        firstName,
+        lastName,
+        designation,
+        nearestCity,
+        tier,
+        status: EmployeeStatus.ACTIVE
+    }
+
+    this.employees.push(employee)
+    return employee
 }
 
 searchEmployee(employeeSearchDto: EmployeeSearchDto) {
@@ -51,7 +73,11 @@ searchEmployee(employeeSearchDto: EmployeeSearchDto) {
 
 getEmployeeById(id: string): Employee {
     const employees = this.getAllEmployees()
-    return employees.find(employee => employee.id == id)
+    let employee = employees.find(employee => employee.id == id)
+    if(!employee){
+        throw new NotFoundException(`${id} is not exist`)
+    }
+    return employee
 }
 
 updateEmployee(employeeUpdateDto: EmployeeUpdateDto) :Employee{

@@ -9,11 +9,11 @@ export interface Employee{
 }
 
 export enum EmployeeTier {
-    TIER_ONE = 1,
-    TIER_TWO = 2,
-    TIER_THREE = 3,
-    TIER_FOUR = 4,
-    TIER_ZERO = 0
+    TIER_ONE = 'TIER_ONE',
+    TIER_TWO = 'TIER_TWO',
+    TIER_THREE = 'TIER_THREE',
+    TIER_FOUR = 'TIER_FOUR',
+    TIER_ZERO = 'TIER_ZERO'
 }
 
 export enum EmployeeStatus {
